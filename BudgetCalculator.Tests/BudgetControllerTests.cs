@@ -6,6 +6,7 @@ namespace BudgetCalculator.Tests;
 
 public class BudgetControllerTests
 {
+    // Позитивный сценарий: 100 * 5 дней без страховки = 500, статус 200
     [Fact]
     public void Calculate_WithoutInsurance_ReturnsOk500()
     {
@@ -22,6 +23,7 @@ public class BudgetControllerTests
         Assert.Equal(500m, GetTotalAmount(okResult));
     }
 
+    // Страховка добавляет 5%: 500 + 5% = 525 (с багом возвращалось 2500)
     [Fact]
     public void Calculate_WithInsurance_Adds5Percent()
     {
@@ -38,6 +40,7 @@ public class BudgetControllerTests
         Assert.Equal(525m, GetTotalAmount(okResult));
     }
 
+    // Отрицательное количество дней должно вернуть 400 Bad Request
     [Fact]
     public void Calculate_NegativeDays_ReturnsBadRequest()
     {
@@ -53,6 +56,7 @@ public class BudgetControllerTests
         Assert.Equal(400, badResult.StatusCode);
     }
 
+    // Нулевая стоимость дня допустима, сумма должна быть 0
     [Fact]
     public void Calculate_ZeroDailyCost_ReturnsZero()
     {
@@ -69,6 +73,7 @@ public class BudgetControllerTests
         Assert.Equal(0m, GetTotalAmount(okResult));
     }
 
+    // Дробная цена: 100.50 * 3 = 301.50 ровно, копейки не теряются
     [Fact]
     public void Calculate_DecimalDailyCost_ReturnsExactKopecks()
     {
@@ -85,6 +90,7 @@ public class BudgetControllerTests
         Assert.Equal(301.50m, GetTotalAmount(okResult));
     }
 
+    // Достаёт TotalAmount из анонимного объекта ответа через рефлексию
     private decimal GetTotalAmount(OkObjectResult result)
     {
         var value = result.Value;
