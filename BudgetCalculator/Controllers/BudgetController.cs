@@ -16,7 +16,7 @@ public class BudgetController : ControllerBase
 
         if (request.IncludeInsurance)
         {
-            total *= 5;
+            total *= 1.05m;
         }
 
         return Ok(new { TotalAmount = total });
